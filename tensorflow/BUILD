@@ -2,6 +2,8 @@
 # TensorFlow is a computational framework, primarily for use in machine
 # learning applications.
 
+load("//tensorflow/core:platform/default/build_config.bzl", "tf_proto_library_py")
+
 package(default_visibility = [":internal"])
 
 licenses(["notice"])  # Apache 2.0
@@ -78,5 +80,32 @@ cc_binary(
         "//tensorflow/cc:cc_ops",
         "//tensorflow/core:tensorflow",
     ],
+)
+
+
+tf_proto_library_py(
+    name = "extra_actions_base_proto",
+    srcs = ["extra_actions_base.proto"],
+)
+
+py_binary(
+    name = "cmake_py",
+    srcs = ["cmake.py"],
+    main = "cmake.py",
+    data = ["//tensorflow/python:pywrap_tensorflow"],
+    deps = ["//google/protobuf:protobuf_python",
+            ":extra_actions_base_proto_py",],
+)
+
+extra_action(
+    name = "cmaker",
+    tools = ["//tensorflow:cmake_py"],
+    cmd = "$(location :cmake_py) --extra_action_file=$(EXTRA_ACTION_FILE)",
+)
+action_listener(
+    name = "cmake_action",
+    mnemonics = ["CppCompile", "CppLinker"],
+    extra_actions = ["//tensorflow:cmaker"],
+    visibility = ["//visibility:public"],
 )
 
