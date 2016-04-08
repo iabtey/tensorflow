@@ -79,6 +79,18 @@ def tf_workspace(path_prefix = "", tf_repo_name = ""):
     remote = "https://github.com/grpc/grpc.git",
   )
 
+  native.new_http_archive(
+    name = "farmhash_archive",
+    url = "https://github.com/google/farmhash/archive/34c13ddfab0e35422f4c3979f360635a8c050260.zip",
+    sha256 = "e3d37a59101f38fd58fb799ed404d630f0eee18bfc2a2433910977cc8fea9c28",
+    build_file = path_prefix + "farmhash.BUILD",
+  )
+
+  native.bind(
+    name = "farmhash",
+    actual = "@farmhash//:farmhash",
+  )
+
   # protobuf expects //external:grpc_cpp_plugin to point to grpc's
   # C++ plugin code generator.
   native.bind(

@@ -16,8 +16,10 @@ limitations under the License.
 #include "tensorflow/core/lib/hash/hash.h"
 
 #include "tensorflow/core/lib/core/raw_coding.h"
+#include "tensorflow/core/platform/logging.h"
 #include "tensorflow/core/platform/macros.h"
 #include "tensorflow/core/platform/types.h"
+#include "farmhash-34c13ddfab0e35422f4c3979f360635a8c050260/src/farmhash.h"
 
 #include <string.h>
 
@@ -28,6 +30,9 @@ static inline uint32 ByteAs32(char c) { return static_cast<uint32>(c) & 0xff; }
 static inline uint64 ByteAs64(char c) { return static_cast<uint64>(c) & 0xff; }
 
 uint32 Hash32(const char* data, size_t n, uint32 seed) {
+  auto fingerprint = ::util::Fingerprint32(data, n);
+  LOG(INFO) << fingerprint;
+
   // 'm' and 'r' are mixing constants generated offline.
   // They're not really 'magic', they just happen to work well.
 

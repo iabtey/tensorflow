@@ -772,6 +772,7 @@ cc_library(
     copts = tf_copts(),
     linkopts = ["-ldl"],
     deps = [
+        "@farmhash_archive//:farmhash",
         ":protos_all_cc",
         "//tensorflow/core/platform/default/build_config:platformlib",
         "//third_party/eigen3",
